@@ -23,8 +23,10 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#e5e8d
 .spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:8px 0 10px;box-shadow:none;position:relative;overflow:visible;border-radius:0;background:transparent;touch-action:none}
 .panel{display:none!important;position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain;touch-action:none;background:var(--cream);box-shadow:0 12px 28px #26352a20}
 .panel.current{display:flex!important;z-index:2;will-change:transform;transition:transform .22s ease,opacity .22s ease;scale:1}
-.panel.next-preview{display:flex!important;z-index:1;inset:5px 0 0;transform:scale(.965) translateY(7px);transform-origin:center top;pointer-events:none;opacity:.68;background:var(--cream);box-shadow:0 8px 18px #26352a12}
+.panel.next-preview{display:flex!important;z-index:1;inset:0;transform:translate3d(0,5px,0) scale(.965);transform-origin:center center;pointer-events:none;opacity:.68;background:var(--cream);box-shadow:0 8px 18px #26352a12;transition:opacity .24s ease,transform .24s ease}
 .panel.next-preview a,.panel.next-preview button{pointer-events:none}
+.flip-shade{position:absolute;inset:0;z-index:1.5;background:rgba(76,86,78,.22);opacity:0;pointer-events:none;transition:opacity .24s ease}
+
 .panel.current.dragging{transition:none!important;user-select:none;-webkit-user-select:none;cursor:grabbing}
 .panel h2{font-size:clamp(32px,9vw,46px)}
 .panel h3{font-size:25px}
@@ -58,7 +60,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#e5e8d
 </section>
 <main class="board">
 <div class="board-top"><span><strong id="sideLabel">OUTSIDE · 3-PANEL SPREAD</strong></span><span>← → TO EXPLORE</span></div>
-<div class="spread" id="spread">
+<div class="spread" id="spread"><div class="flip-shade" aria-hidden="true"></div>
 <article class="panel" data-index="0">
 <span class="page-no">01</span><div class="kicker">WHO WE ARE</div><h3>Flowers for<br>every occasion.</h3>
 <p>Artificial floral décor for weddings, celebrations, commercial spaces and interiors.</p>
@@ -99,16 +101,41 @@ const inside=[
 ];
 let side='outside', index=0;
 const isMobile=()=>window.matchMedia('(max-width:850px)').matches;
+let lastRenderedIndex = -1;
 function paintMobilePage(){
   const face=index<3?'outside':'inside';
   const local=index%3;
+  const pageChanged = lastRenderedIndex !== -1 && lastRenderedIndex !== index;
   spread.querySelector('.next-preview')?.remove();
   panels.forEach((p,i)=>{
     p.innerHTML=face==='outside'?originalOutside[i]:inside[i];
     p.classList.toggle('current',i===local);
     p.classList.remove('next-preview');
+    p.style.transition='';
+    p.style.opacity='';
+    p.style.transform='';
   });
-  // Show the upcoming page underneath the current one, like a book/card stack.
+  const active=panels[local];
+  const shade=spread.querySelector('.flip-shade');
+  // New page starts at preview scale and smoothly grows to full size; the gray shade fades away independently.
+  if(pageChanged){
+    active.style.transition='none';
+    active.style.opacity='1';
+    active.style.transform='translate3d(0,5px,0) scale(.965)';
+    if(shade) shade.style.opacity='0.22';
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        if(active.classList.contains('current')){
+          active.style.transition='transform .28s cubic-bezier(.2,.75,.25,1)';
+          active.style.transform='translate3d(0,0,0) scale(1)';
+          if(shade) shade.style.opacity='0';
+        }
+      });
+    });
+  } else {
+    if(shade) shade.style.opacity='0';
+  }
+  // Upcoming page stays behind the current one, slightly transparent, at the same size.
   if(index<5){
     const nextGlobal=index+1;
     const nextFace=nextGlobal<3?'outside':'inside';
@@ -123,6 +150,7 @@ function paintMobilePage(){
     });
     spread.appendChild(preview);
   }
+  lastRenderedIndex=index;
   side=face;
   tabs.forEach(t=>t.classList.toggle('active',t.dataset.side===side));
   dots.forEach((d,i)=>d.classList.toggle('active',i===local));
@@ -178,6 +206,16 @@ function dragMove(x,y,evt){
   const resisted=(atStart||atEnd)?dx*.32:dx;
   activeCard.style.transform=`translate3d(${resisted}px,0,0) rotate(${resisted/55}deg)`;
   activeCard.style.opacity='1';
+  const preview=spread.querySelector('.next-preview');
+  const shade=spread.querySelector('.flip-shade');
+  if(preview){
+    const progress=Math.min(1,Math.abs(dx)/Math.max(1,window.innerWidth*.8));
+    const scale=.965+(.035*progress);
+    const y=5*(1-progress);
+    preview.style.transition='none';
+    preview.style.transform=`translate3d(0,${y}px,0) scale(${scale})`;
+  }
+  if(shade) shade.style.opacity=String(.18*Math.min(1,Math.abs(dx)/turnThreshold()));
 }
 function dragFinish(){
   if(!dragActive || !activeCard) return;
@@ -192,12 +230,16 @@ function dragFinish(){
     card.style.transform=`translate3d(${distance}px,0,0) rotate(${direction===1?-5:5}deg)`;
     card.style.opacity='1';
     window.setTimeout(()=>{
-      card.style.transform='';card.style.opacity='1';card.style.willChange='';card.style.pointerEvents='';
+      card.style.transform='';card.style.opacity='';card.style.transition='';card.style.willChange='';card.style.pointerEvents='';
       dragActive=false;activeCard=null;pointerId=null;move(direction);
     },190);
   }else{
     card.style.transform='translate3d(0,0,0) rotate(0deg)';
     card.style.opacity='1';
+    const preview=spread.querySelector('.next-preview');
+    const shade=spread.querySelector('.flip-shade');
+    if(preview){preview.style.transition='transform .24s ease, opacity .24s ease';preview.style.transform='translate3d(0,5px,0) scale(.965)';}
+    if(shade) shade.style.opacity='0';
     window.setTimeout(()=>{
       card.style.transform='';card.style.opacity='';card.style.willChange='';
       dragActive=false;activeCard=null;pointerId=null;
