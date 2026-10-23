@@ -20,8 +20,8 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#e5e8d
 .shell{display:flex;flex-direction:column;width:100%;height:100%;height:100dvh;max-width:none;padding:0;margin:0}
 .topbar,.intro,.board-top{display:none!important}
 .board{display:flex;flex-direction:column;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;padding:10px 10px 0;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
-.spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;box-shadow:0 14px 36px #26352a20;position:relative;overflow:hidden;border-radius:0;background:var(--cream);touch-action:pan-y}
-.panel{display:none!important;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain}
+.spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;box-shadow:0 14px 36px #26352a20;position:relative;overflow:hidden;border-radius:0;background:var(--cream);touch-action:none}
+.panel{display:none!important;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain;touch-action:none}
 .panel.current{display:flex!important;will-change:transform;transition:transform .22s ease,opacity .22s ease}
 .panel.current.dragging{transition:none!important;user-select:none;-webkit-user-select:none;cursor:grabbing}
 .panel h2{font-size:clamp(32px,9vw,46px)}
@@ -138,52 +138,75 @@ dots.forEach((d,i)=>d.addEventListener('click',()=>{index=isMobile()?(index<3?i:
 tabs.forEach(t=>t.addEventListener('click',()=>setSide(t.dataset.side)));
 document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});
 
-// Mobile card drag: the card tracks the finger; only release beyond a threshold turns the page.
+// Book-like card drag: direct touch tracking, with threshold-based page turning.
 let dragStartX=0, dragStartY=0, dragX=0, dragActive=false, activeCard=null, pointerId=null;
-const turnThreshold= Math.min(115, Math.max(68, window.innerWidth*0.19));
+const turnThreshold=()=>Math.min(125,Math.max(70,window.innerWidth*.20));
 function dragBegin(x,y,id,card){
   if(!isMobile() || dragActive) return;
   dragActive=true; dragStartX=x; dragStartY=y; dragX=0; activeCard=card; pointerId=id;
   card.classList.add('dragging');
   card.style.transition='none';
+  card.style.willChange='transform';
 }
-function dragMove(x,y){
+function dragMove(x,y,evt){
   if(!dragActive || !activeCard) return;
-  dragX=x-dragStartX;
-  // A little resistance at the first/last page.
-  const atStart=index===0 && dragX>0;
-  const atEnd=index===5 && dragX<0;
-  const dx=(atStart||atEnd)?dragX*.22:dragX;
-  activeCard.style.transform=`translateX(${dx}px) rotate(${dx/42}deg)`;
-  activeCard.style.opacity=String(Math.max(.65,1-Math.abs(dx)/900));
+  const dx=x-dragStartX, dy=y-dragStartY;
+  if(Math.abs(dy)>Math.abs(dx)*1.35 && Math.abs(dx)<18) return;
+  if(evt && evt.cancelable) evt.preventDefault();
+  dragX=dx;
+  const atStart=index===0 && dx>0;
+  const atEnd=index===5 && dx<0;
+  const resisted=(atStart||atEnd)?dx*.32:dx;
+  activeCard.style.transform=`translate3d(${resisted}px,0,0) rotate(${resisted/55}deg)`;
+  activeCard.style.opacity=String(Math.max(.72,1-Math.abs(resisted)/1000));
 }
 function dragFinish(){
   if(!dragActive || !activeCard) return;
   const card=activeCard, dx=dragX;
   card.classList.remove('dragging');
-  card.style.transition='transform .22s ease, opacity .22s ease';
-  const canNext=index<5, canPrev=index>0;
-  if(dx < -turnThreshold && canNext){
-    card.style.transform='translateX(-105%) rotate(-7deg)'; card.style.opacity='0.2';
-    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null;move(1)},150);
-  }else if(dx > turnThreshold && canPrev){
-    card.style.transform='translateX(105%) rotate(7deg)'; card.style.opacity='0.2';
-    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null;move(-1)},150);
+  card.style.transition='transform .24s cubic-bezier(.2,.75,.25,1), opacity .2s ease';
+  const threshold=turnThreshold();
+  const direction=(dx < -threshold && index<5)?1:((dx > threshold && index>0)?-1:0);
+  if(direction){
+    const distance=direction===1?-window.innerWidth:window.innerWidth;
+    card.style.transform=`translate3d(${distance}px,0,0) rotate(${direction===1?-8:8}deg)`;
+    card.style.opacity='0.08';
+    window.setTimeout(()=>{
+      card.style.transform='';card.style.opacity='';card.style.willChange='';
+      dragActive=false;activeCard=null;pointerId=null;move(direction);
+    },190);
   }else{
-    card.style.transform='translateX(0) rotate(0deg)';card.style.opacity='1';
-    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null},230);
+    card.style.transform='translate3d(0,0,0) rotate(0deg)';
+    card.style.opacity='1';
+    window.setTimeout(()=>{
+      card.style.transform='';card.style.opacity='';card.style.willChange='';
+      dragActive=false;activeCard=null;pointerId=null;
+    },250);
   }
 }
-spread.addEventListener('pointerdown',e=>{
-  if(!isMobile())return;
-  if(e.target.closest('a,button'))return;
+spread.addEventListener('touchstart',e=>{
+  if(!isMobile() || dragActive || e.target.closest('a,button')) return;
   const card=e.target.closest('.panel.current');
-  if(!card)return;
+  if(!card) return;
+  const t=e.changedTouches[0];
+  dragBegin(t.clientX,t.clientY,null,card);
+},{passive:true});
+spread.addEventListener('touchmove',e=>{
+  if(!dragActive || !activeCard) return;
+  const t=e.changedTouches[0];
+  dragMove(t.clientX,t.clientY,e);
+},{passive:false});
+spread.addEventListener('touchend',()=>{if(dragActive)dragFinish()},{passive:true});
+spread.addEventListener('touchcancel',()=>{if(dragActive)dragFinish()},{passive:true});
+
+// Mouse/pen drag support for responsive desktop previews.
+spread.addEventListener('pointerdown',e=>{
+  if(!isMobile() || e.pointerType==='touch' || e.target.closest('a,button'))return;
+  const card=e.target.closest('.panel.current');if(!card)return;
   dragBegin(e.clientX,e.clientY,e.pointerId,card);
-  try{card.setPointerCapture(e.pointerId)}catch(_){}
 });
-spread.addEventListener('pointermove',e=>{if(dragActive&&e.pointerId===pointerId)dragMove(e.clientX,e.clientY)});
-spread.addEventListener('pointerup',e=>{if(dragActive&&e.pointerId===pointerId)dragFinish()});
+spread.addEventListener('pointermove',e=>{if(dragActive&&e.pointerType!=='touch'&&e.pointerId===pointerId)dragMove(e.clientX,e.clientY,e)});
+spread.addEventListener('pointerup',e=>{if(dragActive&&e.pointerType!=='touch'&&e.pointerId===pointerId)dragFinish()});
 spread.addEventListener('pointercancel',()=>{if(dragActive)dragFinish()});
 window.addEventListener('resize',render);
 render();
