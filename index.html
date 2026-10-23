@@ -16,21 +16,18 @@ button,a{font:inherit}a{color:inherit}.shell{max-width:1440px;margin:auto;paddin
 .flowerphoto{background:linear-gradient(135deg,#e7e9df,#f0e7e0 55%,#d4ded2)}.flowerphoto .branch{position:absolute;bottom:7%;left:50%;width:3px;height:66%;background:#738a70;transform:rotate(11deg)}.flowerphoto .leaf{position:absolute;width:39px;height:18px;background:#8da38a;border-radius:100% 0 100% 0}.flowerphoto .petal{position:absolute;width:59px;height:59px;border-radius:50%;background:radial-gradient(circle,#b78b7d 0 9%,#edc9be 10% 29%,#f9e5dc 30% 57%,#d7a59b 58% 68%,#f2d8cf 69%);box-shadow:0 5px 12px #72645a13}.flowerphoto .petal.w{background:radial-gradient(circle,#c2b29d 0 9%,#fffaf1 10% 29%,#f9f4ea 30% 57%,#e1d6c7 58% 68%,#fffaf1 69%)}.flowerphoto .petal.p{width:72px;height:72px}.flowerphoto .f1{left:20%;top:24%}.flowerphoto .f2{left:43%;top:13%}.flowerphoto .f3{left:63%;top:31%}.flowerphoto .f4{left:34%;top:47%}.flowerphoto .f5{left:67%;top:12%;width:45px;height:45px}.flowerphoto .leaf.l1{left:26%;top:51%;transform:rotate(-35deg)}.flowerphoto .leaf.l2{left:49%;top:42%;transform:rotate(28deg)}.flowerphoto .leaf.l3{left:54%;top:60%;transform:rotate(-18deg)}
 .product-grid{display:grid;gap:10px;margin:12px 0 0}.product-item{display:grid;grid-template-columns:67px 1fr;gap:12px;align-items:center}.product-thumb{height:65px;position:relative;overflow:hidden;background:#e4e8df}.product-thumb:before,.product-thumb:after{content:"";position:absolute;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#c99b90 0 17%,#efd0c8 18% 52%,#d8aaa0 53%);top:9px;left:8px;box-shadow:20px 22px 0 -2px #f7e9dc}.product-item:nth-child(2) .product-thumb{background:#e4e4d8}.product-item:nth-child(2) .product-thumb:before{background:radial-gradient(circle,#b7c6af 0 15%,#edf0e7 16% 55%,#b3c3ac 56%);left:18px;top:12px}.product-item:nth-child(3) .product-thumb{background:#efe4df}.product-item:nth-child(3) .product-thumb:before{left:24px;top:14px}.product-item strong{display:block;font:400 16px Georgia,serif;margin-bottom:4px;color:#4a5b4e}.product-item small{display:block;font-size:9px;line-height:1.6;color:#7c857c}.sage-panel{background:#7f9385;color:white}.sage-panel .page-no{color:#dce4db}.sage-panel h2,.sage-panel h3{color:#fff}.sage-panel p{color:#edf0e9}.sage-panel .kicker{color:#e4d7b9}.sage-panel .thin-line{background:#ffffff48}.sage-panel .micro{color:#e2e9e0}.contact-list{display:grid;gap:15px;margin-top:8px}.contact-list a{font-size:10px;line-height:1.5;text-decoration:none;color:inherit;overflow-wrap:anywhere}.contact-list a:hover{text-decoration:underline}.contact-list .label{display:block;font-size:8px;letter-spacing:.17em;text-transform:uppercase;opacity:.7;margin-bottom:4px}.socials{display:flex;flex-wrap:wrap;gap:7px;margin-top:17px}.socials a{display:inline-flex;align-items:center;justify-content:center;border:1px solid #ffffff75;padding:9px 10px;text-decoration:none;font-size:8px;letter-spacing:.1em}.socials a:hover{background:#ffffff20}.action{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;text-decoration:none;padding:12px 15px;background:#43594a;color:white;font-size:9px;letter-spacing:.1em;margin-top:auto}.sage-panel .action{background:#f5f4eb;color:#43594a}.inside-bottom{margin-top:auto;padding-top:12px}.outside-lead{margin-top:auto}.navfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:1180px;margin:15px auto 0;color:#737e74;font-size:10px}.navtools{display:flex;align-items:center;gap:9px}.arrow{width:36px;height:36px;border:1px solid #c5cec3;border-radius:50%;background:#fffdf8;color:#3d5444;cursor:pointer;font-size:17px}.arrow:hover{background:#405848;color:white}.arrow:disabled{opacity:.3;cursor:default}.dots{display:flex;gap:5px}.dot{width:6px;height:6px;border:0;border-radius:10px;background:#adb8ab;padding:0;cursor:pointer}.dot.active{width:20px;background:#405848}.counter{min-width:39px;text-align:center;font-size:9px;letter-spacing:.08em}
 @media(max-width:850px){
-.shell{padding:8px 8px 12px}
-.topbar{display:none!important}
-.intro{display:flex;align-items:center;justify-content:center;margin:0 auto 8px;min-height:0}
-.intro>div:first-child{display:none!important}
-.face-tabs{margin:0 auto}
-.board{padding:8px 6px 8px;border-radius:6px}
-.board-top{display:none!important}
-.spread{display:block;min-height:0;max-width:520px}
-.panel{display:none;min-height:590px;padding:26px}
-.panel.current{display:flex}
-.photo{min-height:240px}
-.navfoot{align-items:center;justify-content:center;flex-wrap:wrap;margin-top:8px;gap:8px}
-.navfoot>span:first-child{display:none!important}
-.navtools{justify-content:center}
-.face-tabs button{padding:9px 12px}
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--cream)}
+.shell{width:100%;height:100%;height:100dvh;max-width:none;padding:0;margin:0}
+.topbar,.intro,.board-top,.navfoot{display:none!important}
+.board{width:100%;height:100%;height:100dvh;max-width:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:var(--cream);overflow:hidden}
+.spread{display:block;width:100%;height:100%;height:100dvh;max-width:none;min-height:0;margin:0;box-shadow:none;position:relative;overflow:hidden;touch-action:pan-y}
+.panel{display:none!important;width:100%;height:100%;height:100dvh;min-height:0;max-height:100dvh;padding:clamp(24px,7vw,42px);border:0;overflow:auto;overscroll-behavior:contain}
+.panel.current{display:flex!important}
+.panel h2{font-size:clamp(32px,9vw,46px)}
+.panel h3{font-size:25px}
+.photo{min-height:0;flex:1 1 auto;max-height:43vh}
+.cover .photo{min-height:200px}
+.page-no{right:22px;top:20px}
 }
 @media(max-width:430px){.identity b{font-size:11px}.identity small{font-size:7px}.logo{width:36px;height:36px}.toplinks{max-width:145px}.panel{min-height:570px;padding:25px}.panel h2{font-size:36px}.photo{min-height:220px}}
 @media(min-width:851px){.panel{display:flex!important}}
@@ -77,11 +74,60 @@ button,a{font:inherit}a{color:inherit}.shell{max-width:1440px;margin:auto;paddin
 </main>
 </div>
 <script>
-const panels=[...document.querySelectorAll('.panel')], tabs=[...document.querySelectorAll('.face-tabs button')], dots=[...document.querySelectorAll('.dot')], prev=document.getElementById('prev'),next=document.getElementById('next');
-let side='outside',index=0;
-function render(){panels.forEach((p,i)=>p.classList.toggle('current',i===index));dots.forEach((d,i)=>d.classList.toggle('active',i===index));document.getElementById('counter').textContent=`0${index+1} / 03`;document.getElementById('sideLabel').textContent=(side==='outside'?'OUTSIDE':'INSIDE')+' · 3-PANEL SPREAD';document.getElementById('viewNote').textContent=side==='outside'?'Outside: cover, company introduction and contact information.':'Inside: company profile, product range and project possibilities.';prev.disabled=index===0;next.disabled=index===2}
-function setSide(s){side=s;index=0;tabs.forEach(t=>t.classList.toggle('active',t.dataset.side===s));if(s==='inside'){panels[0].innerHTML='<span class="page-no">04</span><div class="kicker">ABOUT ZHUOHUI</div><h2>A practical partner for floral décor.</h2><p>Changsha Zhuohui Trading Co., Ltd. offers artificial floral products for wedding, event, commercial and interior decoration settings.</p><div class="photo room"><span class="wallframe"></span><span class="console"></span><span class="leg l"></span><span class="leg r"></span><span class="plant"></span><span class="leaf a"></span><span class="leaf b"></span><span class="leaf c"></span><span class="leaf d"></span><span class="vase"></span></div><div class="micro">PRODUCTS · STYLING · CUSTOM INQUIRIES</div>';panels[1].innerHTML='<span class="page-no">05</span><div class="kicker">OUR COLLECTION</div><h2>Floral pieces for different scenes.</h2><div class="product-grid"><div class="product-item"><div class="product-thumb"></div><div><strong>Flower Walls</strong><small>Statement backdrops for weddings and events.</small></div></div><div class="product-item"><div class="product-thumb"></div><div><strong>Arches & Stands</strong><small>Floral structures for ceremony and display.</small></div></div><div class="product-item"><div class="product-thumb"></div><div><strong>Flower Rows & Balls</strong><small>Decorative accents for tables, aisles and venues.</small></div></div></div><div class="inside-bottom"><div class="thin-line"></div><div class="micro">WEDDINGS · EVENTS · COMMERCIAL SPACES</div></div>';panels[2].innerHTML='<span class="page-no">06</span><div class="kicker">MADE FOR YOUR PROJECT</div><h2>Let’s plan your floral details.</h2><p>Share your reference images, preferred colours, dimensions, quantity and delivery destination so we can discuss a suitable product direction.</p><div class="thin-line"></div><div class="kicker">START A CONVERSATION</div><div class="contact-list"><a href="mailto:zhuohuiflower.william@gmail.com"><span class="label">EMAIL</span>zhuohuiflower.william@gmail.com</a><a href="https://zhuohuiflower.en.alibaba.com/" target="_blank" rel="noreferrer"><span class="label">ALIBABA STORE</span>Explore products ↗</a><a href="https://www.instagram.com/zhuohuiflower.william?utm_source=qr" target="_blank" rel="noreferrer"><span class="label">INSTAGRAM</span>@zhuohuiflower.william ↗</a></div><div class="socials"><a href="https://www.tiktok.com/@williamzhuohuiflo" target="_blank" rel="noreferrer">TIKTOK ↗</a><a href="https://youtube.com/@zhuohuiflowerart?si=1VBJfPzrAL1u3DYi" target="_blank" rel="noreferrer">YOUTUBE ↗</a></div><a class="action" href="mailto:zhuohuiflower.william@gmail.com">SEND AN INQUIRY ↗</a>';}else{location.reload();return}render()}
-prev.addEventListener('click',()=>{index=Math.max(0,index-1);render()});next.addEventListener('click',()=>{index=Math.min(2,index+1);render()});dots.forEach((d,i)=>d.addEventListener('click',()=>{index=i;render()}));tabs.forEach(t=>t.addEventListener('click',()=>setSide(t.dataset.side)));document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){index=Math.max(0,index-1);render()}if(e.key==='ArrowRight'){index=Math.min(2,index+1);render()}});let sx=0;document.getElementById('spread').addEventListener('touchstart',e=>sx=e.changedTouches[0].clientX,{passive:true});document.getElementById('spread').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45){index=Math.max(0,Math.min(2,index+(dx<0?1:-1)));render()}},{passive:true});render();
+const panels=[...document.querySelectorAll('.panel')];
+const tabs=[...document.querySelectorAll('.face-tabs button')];
+const dots=[...document.querySelectorAll('.dot')];
+const prev=document.getElementById('prev'), next=document.getElementById('next');
+const spread=document.getElementById('spread');
+const originalOutside=panels.map(p=>p.innerHTML);
+const inside=[
+`<span class="page-no">04</span><div class="kicker">ABOUT ZHUOHUI</div><h2>A practical partner for floral décor.</h2><p>Changsha Zhuohui Trading Co., Ltd. offers artificial floral products for wedding, event, commercial and interior decoration settings.</p><div class="photo room"><span class="wallframe"></span><span class="console"></span><span class="leg l"></span><span class="leg r"></span><span class="plant"></span><span class="leaf a"></span><span class="leaf b"></span><span class="leaf c"></span><span class="leaf d"></span><span class="vase"></span></div><div class="micro">PRODUCTS · STYLING · CUSTOM INQUIRIES</div>`,
+`<span class="page-no">05</span><div class="kicker">OUR COLLECTION</div><h2>Floral pieces for different scenes.</h2><div class="product-grid"><div class="product-item"><div class="product-thumb"></div><div><strong>Flower Walls</strong><small>Statement backdrops for weddings and events.</small></div></div><div class="product-item"><div class="product-thumb"></div><div><strong>Arches & Stands</strong><small>Floral structures for ceremony and display.</small></div></div><div class="product-item"><div class="product-thumb"></div><div><strong>Flower Rows & Balls</strong><small>Decorative accents for tables, aisles and venues.</small></div></div></div><div class="inside-bottom"><div class="thin-line"></div><div class="micro">WEDDINGS · EVENTS · COMMERCIAL SPACES</div></div>`,
+`<span class="page-no">06</span><div class="kicker">MADE FOR YOUR PROJECT</div><h2>Let’s plan your floral details.</h2><p>Share your reference images, preferred colours, dimensions, quantity and delivery destination so we can discuss a suitable product direction.</p><div class="thin-line"></div><div class="kicker">START A CONVERSATION</div><div class="contact-list"><a href="mailto:zhuohuiflower.william@gmail.com"><span class="label">EMAIL</span>zhuohuiflower.william@gmail.com</a><a href="https://zhuohuiflower.en.alibaba.com/" target="_blank" rel="noreferrer"><span class="label">ALIBABA STORE</span>Explore products ↗</a><a href="https://www.instagram.com/zhuohuiflower.william?utm_source=qr" target="_blank" rel="noreferrer"><span class="label">INSTAGRAM</span>@zhuohuiflower.william ↗</a></div><div class="socials"><a href="https://www.tiktok.com/@williamzhuohuiflo" target="_blank" rel="noreferrer">TIKTOK ↗</a><a href="https://youtube.com/@zhuohuiflowerart?si=1VBJfPzrAL1u3DYi" target="_blank" rel="noreferrer">YOUTUBE ↗</a></div><a class="action" href="mailto:zhuohuiflower.william@gmail.com">SEND AN INQUIRY ↗</a>`
+];
+let side='outside', index=0;
+const isMobile=()=>window.matchMedia('(max-width:850px)').matches;
+function paintMobilePage(){
+  const face=index<3?'outside':'inside';
+  const local=index%3;
+  panels.forEach((p,i)=>{
+    p.innerHTML=face==='outside'?originalOutside[i]:inside[i];
+    p.classList.toggle('current',i===local);
+  });
+  side=face;
+  tabs.forEach(t=>t.classList.toggle('active',t.dataset.side===side));
+}
+function render(){
+  if(isMobile()){
+    paintMobilePage();
+    return;
+  }
+  panels.forEach((p,i)=>{
+    p.innerHTML=side==='outside'?originalOutside[i]:inside[i];
+    p.classList.add('current');
+  });
+  tabs.forEach(t=>t.classList.toggle('active',t.dataset.side===side));
+  document.getElementById('sideLabel').textContent=(side==='outside'?'OUTSIDE':'INSIDE')+' · 3-PANEL SPREAD';
+  document.getElementById('viewNote').textContent=side==='outside'?'Outside: cover, company introduction and contact information.':'Inside: company profile, product range and project possibilities.';
+  dots.forEach((d,i)=>d.classList.toggle('active',i===index%3));
+  document.getElementById('counter').textContent=`0${index%3+1} / 03`;
+  prev.disabled=index%3===0;next.disabled=index%3===2;
+}
+function setSide(s){side=s;index=s==='outside'?0:3;render()}
+function move(step){
+  if(isMobile()){index=Math.max(0,Math.min(5,index+step));render()}
+  else {index=Math.max(0,Math.min(2,index%3+step));render()}
+}
+prev.addEventListener('click',()=>move(-1));
+next.addEventListener('click',()=>move(1));
+dots.forEach((d,i)=>d.addEventListener('click',()=>{index=isMobile()?(index<3?i:i+3):i;render()}));
+tabs.forEach(t=>t.addEventListener('click',()=>setSide(t.dataset.side)));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});
+let sx=0,sy=0;
+spread.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true});
+spread.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(isMobile()&&Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))move(dx<0?1:-1)},{passive:true});
+window.addEventListener('resize',render);
+render();
 </script>
 </body>
 </html>
