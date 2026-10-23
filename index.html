@@ -20,9 +20,11 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#e5e8d
 .shell{display:flex;flex-direction:column;width:100%;height:100%;height:100dvh;max-width:none;padding:0;margin:0}
 .topbar,.intro,.board-top{display:none!important}
 .board{display:flex;flex-direction:column;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;padding:10px 10px 0;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
-.spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;box-shadow:0 14px 36px #26352a20;position:relative;overflow:hidden;border-radius:0;background:var(--cream);touch-action:none}
-.panel{display:none!important;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain;touch-action:none}
-.panel.current{display:flex!important;will-change:transform;transition:transform .22s ease,opacity .22s ease}
+.spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:8px 0 10px;box-shadow:none;position:relative;overflow:visible;border-radius:0;background:transparent;touch-action:none}
+.panel{display:none!important;position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain;touch-action:none;background:var(--cream);box-shadow:0 12px 28px #26352a20}
+.panel.current{display:flex!important;z-index:2;will-change:transform;transition:transform .22s ease,opacity .22s ease}
+.panel.next-preview{display:flex!important;z-index:1;inset:5px 0 0;transform:scale(.965) translateY(7px);transform-origin:center top;pointer-events:none;opacity:.72;box-shadow:0 8px 18px #26352a12}
+.panel.next-preview a,.panel.next-preview button{pointer-events:none}
 .panel.current.dragging{transition:none!important;user-select:none;-webkit-user-select:none;cursor:grabbing}
 .panel h2{font-size:clamp(32px,9vw,46px)}
 .panel h3{font-size:25px}
@@ -100,10 +102,27 @@ const isMobile=()=>window.matchMedia('(max-width:850px)').matches;
 function paintMobilePage(){
   const face=index<3?'outside':'inside';
   const local=index%3;
+  spread.querySelector('.next-preview')?.remove();
   panels.forEach((p,i)=>{
     p.innerHTML=face==='outside'?originalOutside[i]:inside[i];
     p.classList.toggle('current',i===local);
+    p.classList.remove('next-preview');
   });
+  // Show the upcoming page underneath the current one, like a book/card stack.
+  if(index<5){
+    const nextGlobal=index+1;
+    const nextFace=nextGlobal<3?'outside':'inside';
+    const nextLocal=nextGlobal%3;
+    const preview=panels[nextLocal].cloneNode(true);
+    preview.className='panel next-preview';
+    preview.innerHTML=nextFace==='outside'?originalOutside[nextLocal]:inside[nextLocal];
+    preview.setAttribute('aria-hidden','true');
+    preview.querySelectorAll('a,button').forEach(el=>{
+      el.setAttribute('tabindex','-1');
+      el.setAttribute('aria-hidden','true');
+    });
+    spread.appendChild(preview);
+  }
   side=face;
   tabs.forEach(t=>t.classList.toggle('active',t.dataset.side===side));
   dots.forEach((d,i)=>d.classList.toggle('active',i===local));
@@ -169,10 +188,11 @@ function dragFinish(){
   const direction=(dx < -threshold && index<5)?1:((dx > threshold && index>0)?-1:0);
   if(direction){
     const distance=direction===1?-window.innerWidth:window.innerWidth;
-    card.style.transform=`translate3d(${distance}px,0,0) rotate(${direction===1?-8:8}deg)`;
+    card.style.pointerEvents='none';
+    card.style.transform=`translate3d(${distance}px,0,0) rotate(${direction===1?-5:5}deg)`;
     card.style.opacity='0.08';
     window.setTimeout(()=>{
-      card.style.transform='';card.style.opacity='';card.style.willChange='';
+      card.style.transform='';card.style.opacity='';card.style.willChange='';card.style.pointerEvents='';
       dragActive=false;activeCard=null;pointerId=null;move(direction);
     },190);
   }else{
