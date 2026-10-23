@@ -22,8 +22,8 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#e5e8d
 .board{display:flex;flex-direction:column;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;padding:10px 10px 0;border:0;border-radius:0;box-shadow:none;background:transparent;overflow:hidden}
 .spread{display:block;flex:1;min-height:0;width:100%;height:auto;max-width:none;margin:0;box-shadow:0 14px 36px #26352a20;position:relative;overflow:hidden;border-radius:0;background:var(--cream);touch-action:pan-y}
 .panel{display:none!important;width:100%;height:100%;min-height:0;max-height:100%;padding:clamp(24px,7vw,36px);border:0;border-radius:0;overflow:auto;overscroll-behavior:contain}
-.panel.current{display:flex!important;animation:cardEnter .24s ease both}
-@keyframes cardEnter{from{opacity:.65;transform:translateX(14px) scale(.99)}to{opacity:1;transform:translateX(0) scale(1)}}
+.panel.current{display:flex!important;will-change:transform;transition:transform .22s ease,opacity .22s ease}
+.panel.current.dragging{transition:none!important;user-select:none;-webkit-user-select:none;cursor:grabbing}
 .panel h2{font-size:clamp(32px,9vw,46px)}
 .panel h3{font-size:25px}
 .photo{min-height:0;flex:1 1 auto;max-height:40vh}
@@ -137,9 +137,54 @@ next.addEventListener('click',()=>move(1));
 dots.forEach((d,i)=>d.addEventListener('click',()=>{index=isMobile()?(index<3?i:i+3):i;render()}));
 tabs.forEach(t=>t.addEventListener('click',()=>setSide(t.dataset.side)));
 document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});
-let sx=0,sy=0;
-spread.addEventListener('touchstart',e=>{sx=e.changedTouches[0].clientX;sy=e.changedTouches[0].clientY},{passive:true});
-spread.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(isMobile()&&Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))move(dx<0?1:-1)},{passive:true});
+
+// Mobile card drag: the card tracks the finger; only release beyond a threshold turns the page.
+let dragStartX=0, dragStartY=0, dragX=0, dragActive=false, activeCard=null, pointerId=null;
+const turnThreshold= Math.min(115, Math.max(68, window.innerWidth*0.19));
+function dragBegin(x,y,id,card){
+  if(!isMobile() || dragActive) return;
+  dragActive=true; dragStartX=x; dragStartY=y; dragX=0; activeCard=card; pointerId=id;
+  card.classList.add('dragging');
+  card.style.transition='none';
+}
+function dragMove(x,y){
+  if(!dragActive || !activeCard) return;
+  dragX=x-dragStartX;
+  // A little resistance at the first/last page.
+  const atStart=index===0 && dragX>0;
+  const atEnd=index===5 && dragX<0;
+  const dx=(atStart||atEnd)?dragX*.22:dragX;
+  activeCard.style.transform=`translateX(${dx}px) rotate(${dx/42}deg)`;
+  activeCard.style.opacity=String(Math.max(.65,1-Math.abs(dx)/900));
+}
+function dragFinish(){
+  if(!dragActive || !activeCard) return;
+  const card=activeCard, dx=dragX;
+  card.classList.remove('dragging');
+  card.style.transition='transform .22s ease, opacity .22s ease';
+  const canNext=index<5, canPrev=index>0;
+  if(dx < -turnThreshold && canNext){
+    card.style.transform='translateX(-105%) rotate(-7deg)'; card.style.opacity='0.2';
+    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null;move(1)},150);
+  }else if(dx > turnThreshold && canPrev){
+    card.style.transform='translateX(105%) rotate(7deg)'; card.style.opacity='0.2';
+    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null;move(-1)},150);
+  }else{
+    card.style.transform='translateX(0) rotate(0deg)';card.style.opacity='1';
+    window.setTimeout(()=>{card.style.transform='';card.style.opacity='';dragActive=false;activeCard=null;pointerId=null},230);
+  }
+}
+spread.addEventListener('pointerdown',e=>{
+  if(!isMobile())return;
+  if(e.target.closest('a,button'))return;
+  const card=e.target.closest('.panel.current');
+  if(!card)return;
+  dragBegin(e.clientX,e.clientY,e.pointerId,card);
+  try{card.setPointerCapture(e.pointerId)}catch(_){}
+});
+spread.addEventListener('pointermove',e=>{if(dragActive&&e.pointerId===pointerId)dragMove(e.clientX,e.clientY)});
+spread.addEventListener('pointerup',e=>{if(dragActive&&e.pointerId===pointerId)dragFinish()});
+spread.addEventListener('pointercancel',()=>{if(dragActive)dragFinish()});
 window.addEventListener('resize',render);
 render();
 </script>
